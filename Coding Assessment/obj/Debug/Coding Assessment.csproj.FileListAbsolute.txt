@@ -1,0 +1,11 @@
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\Coding Assessment.exe.config
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\Coding Assessment.exe
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\Coding Assessment.pdb
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\obj\Debug\Coding Assessment.csprojAssemblyReference.cache
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\obj\Debug\Coding Assessment.csproj.CoreCompileInputs.cache
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\obj\Debug\Coding Assessment.exe
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\obj\Debug\Coding Assessment.pdb
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\LumenWorks.Framework.IO.dll
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\LumenWorks.Framework.IO.pdb
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\bin\Debug\LumenWorks.Framework.IO.xml
+C:\Users\Me\Desktop\Student Developer\Coding Assessment\obj\Debug\Coding Assessment.csproj.CopyComplete

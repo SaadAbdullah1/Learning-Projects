@@ -1,0 +1,36 @@
+The total quantity sold is 66 products.
+
+The total revenue of all products is $986.84.
+
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $30
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $59.98
+Total revenue of Product #1 is $14.99
+Total revenue of Product #1 is $20
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $45
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $59.98
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $20
+Total revenue of Product #1 is $12
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $40
+Total revenue of Product #1 is $30
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $15
+Total revenue of Product #1 is $30
+Total revenue of Product #1 is $179.94
+Total revenue of Product #1 is $39.95
+Total revenue of Product #1 is $40
+
+The most popular product based on quantity sold, is Product #32 which is sold 6 times.
