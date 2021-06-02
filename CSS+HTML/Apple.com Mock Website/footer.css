@@ -1,0 +1,114 @@
+footer {
+  background-color: #f5f5f7;
+}
+ul {
+  padding: 0px;
+}
+.footer-container {
+  min-width: 600px;
+  margin-left: 465px;
+  margin-right: 465px;
+}
+.footnotes {
+  font-family: sfprohead;
+  font-size: 12px;
+  color: #86868b;
+  line-height: 16px;
+  justify-content: left;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d7;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.footnotes ul a {
+  text-decoration: none;
+  color: #86868b;
+  font-weight: bolder;
+}
+.footnotes ul a:hover {
+  text-decoration: underline;
+}
+
+.navigation-container {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d7;
+}
+.navigation-box {
+  display: flex;
+  flex-direction: ltr;
+  justify-content: space-between;
+  padding-right: 70px;
+  padding-top: 10px;
+  padding-bottom: 11px;
+}
+.content-column {
+  display: inherit;
+  flex-direction: column;
+  font-family: sfprohead;
+  font-size: 12px;
+  line-height: 16px;
+}
+.content-column p {
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-right: 20px;
+}
+.content-column a {
+  display: block;
+  text-decoration: none;
+  color: #515154;
+  font-weight: 400;
+  width: fit-content;
+  margin-bottom: 9px;
+}
+.content-column a:hover {
+  text-decoration: underline;
+}
+#moreways {
+  font-family: sfprohead;
+  font-size: 12px;
+  color: #86868b;
+}
+#moreways a {
+  text-decoration: none;
+  color: #06c;
+}
+#moreways a:hover {
+  text-decoration: underline;
+}
+.copyright-container {
+  font-family: sfprohead;
+  font-size: 12px;
+  color: #86868b;
+  padding-top: 10px;
+  padding-bottom: 21px;
+}
+.region-select {
+  float: right;
+}
+.region-select a {
+  text-decoration: none;
+  color: #515154;
+}
+.region-select a:hover {
+  text-decoration: underline;
+}
+.fr {
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: #d2d2d7;
+  margin-left: 7px;
+  padding-left: 11px;
+}
+.footer-links {
+  margin-top: 5px;
+}
+.footer-links a {
+  text-decoration: none;
+  color: #515154;
+}
+.footer-links a:hover {
+  text-decoration: underline;
+}

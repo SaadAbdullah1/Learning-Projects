@@ -1,0 +1,65 @@
+@font-face {
+  src: url(SF-Font-Pro/SF-Pro-Text-Ultralight.otf);
+  font-family: sfpro;
+}
+@font-face {
+  src: url(SF-Font-Pro/SF-Pro-Text-Light.otf);
+  font-family: sfprohead;
+}
+@font-face {
+  src: url(SF-Font-Pro/SF-Pro-Display-Regular.otf);
+  font-family: sfprodisplay;
+}
+
+body {
+  font-family: sfpro;
+  margin: 0px;
+}
+.navbar {
+  /* Received some stats from Apple.com/ca by inspecting*/
+  display: flex;
+  position: fixed; /*make the navbar sticky*/
+  z-index: 1; /*allows for overlapping of the nav over body*/
+  top: 0px;
+  width: 100%;
+  /*Applying a translucent filter to nav element*/
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: saturate(1.9) blur(20px);
+  height: 43px;
+  justify-content: space-around;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+.navbar a {
+  font-size: 14px;
+  line-height: 44px;
+  color: #f5f5f7;
+  text-decoration: none;
+}
+#applelogo {
+  width: 16px;
+  height: auto;
+}
+#searchlogo {
+  padding-top: 10px;
+  width: 22px;
+  height: auto;
+}
+#cartlogo {
+  width: 16px;
+  height: auto;
+}
+
+.head-line a {
+  text-decoration: none;
+}
+.head-line a:hover {
+  text-decoration: underline;
+}
+.head-line {
+  margin-top: 58px;
+  font-family: sfprohead;
+  color: #1d1d1f;
+  text-align: center;
+  font-size: 14px;
+}

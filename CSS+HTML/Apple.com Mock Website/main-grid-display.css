@@ -1,0 +1,182 @@
+.image-grid {
+  display: grid;
+}
+/*-------------------------Main Grid Element 1-------------------------------*/
+.iphone-12 {
+  color: black;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+  padding-bottom: 5px;
+}
+.image-content h2 {
+  font-size: 56px;
+  line-height: 60px;
+  position: absolute;
+  top: 6.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.image-content h3 {
+  font-weight: lighter;
+  position: absolute;
+  font-size: 28px;
+  line-height: 31px;
+  top: 16%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.image-content p {
+  color: #86868b;
+  font-family: sfprohead;
+  position: absolute;
+  font-size: 17px;
+  line-height: 25px;
+  top: 22.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#i12l1 {
+  font-family: sfprodisplay;
+  color: #06c;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 31%;
+  left: 47.5%;
+  transform: translate(-50%, -50%);
+}
+#i12-learnmore:hover {
+  text-decoration: underline;
+}
+#i12l2 {
+  font-family: sfprodisplay;
+  color: #06c;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 31%;
+  left: 54.5%;
+  transform: translate(-50%, -50%);
+}
+#i12-buy:hover {
+  text-decoration: underline;
+}
+/*-------------------------Main Grid Element 2-------------------------------*/
+.iphone-12-pro {
+  color: white;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+  padding-bottom: 5px;
+}
+.iphone12pro h2 {
+  font-size: 52px;
+  line-height: 60px;
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.iphone12pro h3 {
+  font-weight: lighter;
+  position: absolute;
+  font-size: 28px;
+  line-height: 31px;
+  top: 16%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.iphone12pro p {
+  color: #86868b;
+  font-family: sfprohead;
+  position: absolute;
+  font-size: 17px;
+  line-height: 25px;
+  top: 22.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#i12prol1 {
+  font-family: sfprodisplay;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 31%;
+  left: 47.5%;
+  transform: translate(-50%, -50%);
+}
+#i12pro-learnmore:hover {
+  text-decoration: underline;
+}
+#i12prol2 {
+  font-family: sfprodisplay;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 31%;
+  left: 54.5%;
+  transform: translate(-50%, -50%);
+}
+#i12pro-buy:hover {
+  text-decoration: underline;
+}
+/*-------------------------Main Grid Element 3-------------------------------*/
+.ipad-air {
+  color: black;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+  padding-bottom: 5px;
+}
+.ipad-air h2 {
+  font-size: 52px;
+  line-height: 60px;
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.ipad-air h3 {
+  font-weight: lighter;
+  position: absolute;
+  font-size: 28px;
+  line-height: 31px;
+  top: 17%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#ipairl1 {
+  font-family: sfprodisplay;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 29%;
+  left: 47.5%;
+  transform: translate(-50%, -50%);
+}
+#ipair-learnmore:hover {
+  text-decoration: underline;
+}
+#ipairl2 {
+  font-family: sfprodisplay;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 29px;
+  top: 29%;
+  left: 54.5%;
+  transform: translate(-50%, -50%);
+}
+#ipair-buy:hover {
+  text-decoration: underline;
+}

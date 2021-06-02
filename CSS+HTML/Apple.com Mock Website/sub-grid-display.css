@@ -1,0 +1,181 @@
+.image-sub-grid {
+  display: grid;
+  /*column width based on max width of main grid images 
+  (they were screenshot saves is why they aren't same as the originals)*/
+  grid-template-columns: 953px 953px;
+}
+.image-sub-grid .image-link img {
+  height: auto;
+  width: 933px;
+}
+/*-------------------------Sub Grid Element 1-------------------------------*/
+.apple-arcade {
+  color: black;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+}
+#arcade {
+  width: 152px;
+  height: 34px;
+}
+.image-content img {
+  position: absolute;
+  top: 12.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.image-content h5 {
+  font-family: sfprodisplay;
+  font-weight: lighter;
+  position: absolute;
+  font-size: 21px;
+  line-height: 26px;
+  top: 13%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#arcl1 {
+  font-family: sfprohead;
+  color: #06c;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 25%;
+  left: 44%;
+  transform: translate(-50%, -50%);
+}
+#arc-learnmore:hover {
+  text-decoration: underline;
+}
+#arcl2 {
+  font-family: sfprohead;
+  color: #06c;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 25%;
+  left: 57.5%;
+  transform: translate(-50%, -50%);
+}
+#arc-try:hover {
+  text-decoration: underline;
+}
+/*-------------------------Sub Grid Element 3-------------------------------*/
+#macbookair {
+  width: 951px;
+  height: 584px;
+}
+.macbook-air {
+  color: white;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+}
+.image-content h4 {
+  font-size: 40px;
+  line-height: 44px;
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.image-content h5 {
+  font-family: sfprodisplay;
+  font-weight: lighter;
+  position: absolute;
+  font-size: 21px;
+  line-height: 26px;
+  top: 13%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#macl1 {
+  font-family: sfprohead;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 25%;
+  left: 44%;
+  transform: translate(-50%, -50%);
+}
+#mac-learnmore:hover {
+  text-decoration: underline;
+}
+#macl2 {
+  font-family: sfprohead;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 25%;
+  left: 57.5%;
+  transform: translate(-50%, -50%);
+}
+#mac-buy:hover {
+  text-decoration: underline;
+}
+/*-------------------------Sub Grid Element 6-------------------------------*/
+#applewatch {
+  width: 951px;
+  height: 584px;
+}
+.apple-watch {
+  color: white;
+  font-family: sfprodisplay;
+  position: relative;
+  text-align: center;
+}
+#watch {
+  width: 152px;
+  height: auto;
+}
+.apple-watch .image-content img {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.apple-watch .image-content h5 {
+  font-family: sfprodisplay;
+  font-weight: lighter;
+  position: absolute;
+  font-size: 21px;
+  line-height: 26px;
+  top: 17%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#watchl1 {
+  font-family: sfprohead;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 29%;
+  left: 44%;
+  transform: translate(-50%, -50%);
+}
+#watch-learnmore:hover {
+  text-decoration: underline;
+}
+#watchl2 {
+  font-family: sfprohead;
+  color: #2997ff;
+  position: absolute;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 21px;
+  top: 29%;
+  left: 57.5%;
+  transform: translate(-50%, -50%);
+}
+#watch-buy:hover {
+  text-decoration: underline;
+}
