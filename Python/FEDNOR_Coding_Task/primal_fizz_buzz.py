@@ -6,8 +6,6 @@
 
 import re
 
-filteredFile = []
-
 # Open text file to parse
 with open('C:/Users/SaadAbdullah/OneDrive/Programming/Learning-Projects/Python/FEDNOR_Coding_Task/sample.txt') as file:
     lines = file.read().splitlines()
@@ -35,12 +33,14 @@ def extractNum(i):
 
 # Check for prime number
 def isPrime(n):
-    for i in range (2, n):
-        if (n%i) == 0:
-            return False
-    return True
+    if n > 1:
+        for i in range(2, n):
+            if (n % i) == 0:
+                return False
+        return True
 
 # Parse through file and isolate integers
+filteredFile = []
 for i in lines:
     if extractNum(i):
         # print(extractNum(i)[0])
@@ -52,12 +52,22 @@ for i in lines:
 # Convert string list to int
 primalFile = [eval(i) for i in filteredFile]
 
+# Apply requirements of Prime, Buzz, Fizz
 for i in primalFile:
+    temp = []
     if isPrime(i):
-        print("Prime")
-    elif i%3 == 0:
-        print("Fizz")
-    elif i%5 == 0:
+        temp.append("Prime")
+        if i % 3 == 0:
+            temp.append("Fizz")
+        if i % 5 == 0:
+            temp.append("Buzz")
+        print(''.join(temp))
+    elif i % 3 == 0:
+        temp.append("Fizz")
+        if i % 5 == 0:
+            temp.append("Buzz")
+        print(''.join(temp))
+    elif i % 5 == 0:
         print("Buzz")
     else:
         print(i)
