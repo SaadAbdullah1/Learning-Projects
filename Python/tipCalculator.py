@@ -7,3 +7,5 @@ billSplitNum = int(input("How many people are splitting this bill? "))
 indivPay = ((totalBill * tipPercentage/100) + totalBill) / billSplitNum
 
 print(f"Each person should pay: ${round(indivPay,2)}")
+
+#test change
