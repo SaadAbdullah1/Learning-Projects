@@ -2,6 +2,28 @@
 import requests
 from bs4 import BeautifulSoup
 
+# A function to scrape all active ads from the Meta Ads Library, from which we will get our stores to use for analysis
+def get_active_ads(access_token, date_created, language, country_region):
+    url = "https://api.metafy.com/v1/ads"
+    headers = {
+        "Authorization": "Bearer " + access_token
+    }
+    params = {
+        "start_time": date_created,
+        "language": language,
+        "country_code": country_region
+    }
+    response = requests.get(url, headers=headers, params=params)
+    data = response.json()
+    active_ads = []
+    for ad in data["data"]:
+        if ad["political"] == False:
+            active_ad = {}
+            active_ad["ad_id"] = ad["ad_id"]
+            active_ad["call_to_action_link"] = ad["call_to_action_link"]
+            active_ads.append(active_ad)
+    return active_ads
+
 # A function that will first crawl the web to scrape all active 'shopify' stores
 def get_shopify_stores():
     shops = []
