@@ -1,28 +1,45 @@
-
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
-# A function to scrape all active ads from the Meta Ads Library, from which we will get our stores to use for analysis
-def get_active_ads(access_token, date_created, language, country_region):
-    url = "https://api.metafy.com/v1/ads"
-    headers = {
-        "Authorization": "Bearer " + access_token
-    }
-    params = {
-        "start_time": date_created,
-        "language": language,
-        "country_code": country_region
-    }
-    response = requests.get(url, headers=headers, params=params)
-    data = response.json()
-    active_ads = []
-    for ad in data["data"]:
-        if ad["political"] == False:
-            active_ad = {}
-            active_ad["ad_id"] = ad["ad_id"]
-            active_ad["call_to_action_link"] = ad["call_to_action_link"]
-            active_ads.append(active_ad)
-    return active_ads
+# A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
+def get_facebook_ads():
+    # Initialize the browser and navigate to the page
+    browser = webdriver.Chrome()
+    browser.get("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all&content_languages[0]=en")
+
+    # Enter a keyword in the search box
+    wait = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
+    # search_box = browser.find_element(by=By.XPATH, value='//input[@placeholder='Search by keyword or advertiser']')
+    wait.send_keys("dog")
+    wait.submit()
+
+    # # Select a filter
+    # filter_button = browser.find_element_by_xpath('//button[@data-testid="adlibrary_filter_toggle"]')
+    # filter_button.click()
+
+    # # Find the checkbox for the desired filter
+    # filter_checkbox = browser.find_element_by_xpath('//input[@data-testid="adlibrary_filter_political_org"]')
+    # filter_checkbox.click()
+
+    # # Apply the filter
+    # apply_button = browser.find_element_by_xpath('//button[@data-testid="adlibrary_filter_apply"]')
+    # apply_button.click()
+
+    # # Find the first advertisement and click on the call-to-action button
+    # ad = browser.find_element_by_xpath('//div[@data-testid="ad_preview"]')
+    # cta_button = ad.find_element_by_xpath('.//a[@data-testid="ad_preview_cta_link"]')
+    # cta_button.click()
+
+    # # Output the URL of the advertisers landing page
+    # advertisers_url = browser.current_url
+    # print(advertisers_url)
+
+    # # Close the browser
+    # browser.quit()
 
 # A function that will first crawl the web to scrape all active 'shopify' stores
 def get_shopify_stores():
@@ -45,7 +62,6 @@ def get_shopify_stores():
     for shop in shops:
         print(" -", shop)
 
-get_shopify_stores()
 #------------------------------------------------------------------------------------------------------------------------------#
 # This is the steps PPSPY utilizes for scraping store data (According a posting on Stackoverflow)
 #-------------------------------------------------------------------------------------------------------------------------------
@@ -60,3 +76,11 @@ get_shopify_stores()
 # And with this, it is possible to track the sales (approximately).
 #------------------------------------------------------------------------------------------------------------------------------#
 
+
+# MAIN EXECUTION 
+def main():
+    print("sex is cool, but im coolerest")
+    get_facebook_ads()
+    
+if __name__ == "__main__":
+    main()
