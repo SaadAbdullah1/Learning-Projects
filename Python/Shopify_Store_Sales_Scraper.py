@@ -1,21 +1,28 @@
+import time
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 # A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
 def get_facebook_ads():
-    # Initialize the browser and navigate to the page
-    browser = webdriver.Chrome()
-    browser.get("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all&content_languages[0]=en")
+    try:
+        # Initialize the browser and navigate to the page
+        browser = webdriver.Chrome(executable_path="C:\\Users\\SaadAbdullah\\OneDrive\\Programming\\Learning-Projects\\chromedriver.exe")
+        browser.get("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all&content_languages[0]=en")
+        # (In working order): Look for keyword, make it clickable, clear existing data in box, enter new info, keep page open for 10 seconds
+        search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
+        search_box.click()
+        search_box.clear()
+        search_box.send_keys("" "" + Keys.ENTER)
+        time.sleep(10)
 
-    # Enter a keyword in the search box
-    wait = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
-    # search_box = browser.find_element(by=By.XPATH, value='//input[@placeholder='Search by keyword or advertiser']')
-    wait.send_keys("dog")
-    wait.submit()
+    except Exception as e:
+        print(e)
+        browser.quit() 
 
     # # Select a filter
     # filter_button = browser.find_element_by_xpath('//button[@data-testid="adlibrary_filter_toggle"]')
@@ -63,7 +70,7 @@ def get_shopify_stores():
         print(" -", shop)
 
 #------------------------------------------------------------------------------------------------------------------------------#
-# This is the steps PPSPY utilizes for scraping store data (According a posting on Stackoverflow)
+# This is the steps PPSPY utilizes for scraping store data (According to a posting on Stackoverflow)
 #-------------------------------------------------------------------------------------------------------------------------------
 # 1. Reads your Shopify sitemap to find the products in the store. .../sitemap_products_1.xml
 # 2. As fallback, it parses the URL: .../collections/all?sort_by=best-selling - and tries to find the products there.
@@ -79,7 +86,6 @@ def get_shopify_stores():
 
 # MAIN EXECUTION 
 def main():
-    print("sex is cool, but im coolerest")
     get_facebook_ads()
     
 if __name__ == "__main__":
