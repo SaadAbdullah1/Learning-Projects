@@ -1,7 +1,10 @@
 import time
+from datetime import datetime, timedelta
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -9,44 +12,54 @@ from selenium.webdriver.common.keys import Keys
 
 # A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
 def get_facebook_ads():
+    # Need date from 2 days ago
+    past_date = (datetime.now() - timedelta(days=3)).strftime("%m/%d/%Y")
     try:
         # Initialize the browser and navigate to the page
-        browser = webdriver.Chrome(executable_path="C:\\Users\\SaadAbdullah\\OneDrive\\Programming\\Learning-Projects\\chromedriver.exe")
-        browser.get("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all&content_languages[0]=en")
+        browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        browser.get("https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all")
         # (In working order): Look for keyword, make it clickable, clear existing data in box, enter new info, keep page open for 10 seconds
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
         search_box.click()
         search_box.clear()
         search_box.send_keys("" "" + Keys.ENTER)
+        time.sleep(3)
+        filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        filters_button.click()
+        time.sleep(3)
+        
+        # [Popup] Activating the filters (English, active ads, date from (last 2 days) to today)
+        filters_language_dropdown = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='All languages']")))
+        filters_language_dropdown.click()
+        time.sleep(3)
+        filters_language_selector_en = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='English']")))
+        filters_language_selector_en.click()
+        time.sleep(3)
+        ## click out of dropdown selector
+        click_out = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='combobox']//div//div//div//div//div//div//div[contains(text(),'English')]")))
+        click_out.click()
+        time.sleep(3)
+        filters_active_status = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active and inactive']")))
+        filters_active_status.click()
+        time.sleep(3)
+        filters_active_selector = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active ads']")))
+        filters_active_selector.click()
+        time.sleep(3)
+        filters_from_date = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='mm/dd/yyyy']")))
+        filters_from_date.click()
+        filters_from_date.send_keys(Keys.CONTROL, "a")
+        filters_from_date.send_keys(Keys.BACK_SPACE)
+        filters_from_date.send_keys(past_date)
+        time.sleep(3)
+        ## apply all filters
+        filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")))
+        filters_apply.click()
         time.sleep(10)
 
+        # 
     except Exception as e:
         print(e)
         browser.quit() 
-
-    # # Select a filter
-    # filter_button = browser.find_element_by_xpath('//button[@data-testid="adlibrary_filter_toggle"]')
-    # filter_button.click()
-
-    # # Find the checkbox for the desired filter
-    # filter_checkbox = browser.find_element_by_xpath('//input[@data-testid="adlibrary_filter_political_org"]')
-    # filter_checkbox.click()
-
-    # # Apply the filter
-    # apply_button = browser.find_element_by_xpath('//button[@data-testid="adlibrary_filter_apply"]')
-    # apply_button.click()
-
-    # # Find the first advertisement and click on the call-to-action button
-    # ad = browser.find_element_by_xpath('//div[@data-testid="ad_preview"]')
-    # cta_button = ad.find_element_by_xpath('.//a[@data-testid="ad_preview_cta_link"]')
-    # cta_button.click()
-
-    # # Output the URL of the advertisers landing page
-    # advertisers_url = browser.current_url
-    # print(advertisers_url)
-
-    # # Close the browser
-    # browser.quit()
 
 # A function that will first crawl the web to scrape all active 'shopify' stores
 def get_shopify_stores():
