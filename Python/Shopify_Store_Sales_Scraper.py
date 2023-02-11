@@ -45,6 +45,9 @@ def get_facebook_ads():
         filters_active_selector = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active ads']")))
         filters_active_selector.click()
         time.sleep(3)
+        # scroll into view of date element
+        pg_down = browser.find_element(By.XPATH, "//input[@placeholder='mm/dd/yyyy']")
+        pg_down.location_once_scrolled_into_view
         filters_from_date = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='mm/dd/yyyy']")))
         filters_from_date.click()
         filters_from_date.send_keys(Keys.CONTROL, "a")
@@ -54,15 +57,28 @@ def get_facebook_ads():
         ## apply all filters
         filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")))
         filters_apply.click()
-        time.sleep(10)
+        time.sleep(5)
 
-        # 
+        # Now we must go through each ad tablet and output `unique` CTA urls
+        # Going to go down the bizarre strategy of just tabbing through the ads
+        starting_element = browser.find_element(By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")
+        starting_element.click()
+        time.sleep(1)
+        starting_element.click()
+        time.sleep(3)
+        # actual tabbing process, with a starting point and the next element being reassigned to the initial, to tab to
+        for i in range(20):
+            starting_element.send_keys(Keys.TAB)
+            tab_wait = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
+            starting_element = browser.switch_to.active_element
+            time.sleep(1)
+            # check for a set of keywords found when the CTA button 
     except Exception as e:
         print(e)
         browser.quit() 
 
 # A function that will first crawl the web to scrape all active 'shopify' stores
-def get_shopify_stores():
+def get_shopify_stores(site_url):
     shops = []
     url = 'https://www.google.com/search?q=site:shopify.com'
     page = requests.get(url)
@@ -100,6 +116,6 @@ def get_shopify_stores():
 # MAIN EXECUTION 
 def main():
     get_facebook_ads()
-    
+
 if __name__ == "__main__":
     main()
