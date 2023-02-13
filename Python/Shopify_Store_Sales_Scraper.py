@@ -12,8 +12,11 @@ from selenium.webdriver.common.keys import Keys
 
 # A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
 def get_facebook_ads():
+
     past_date = (datetime.now() - timedelta(days=3)).strftime("%m/%d/%Y")
     meta_cta_buttons = ['Get Offer', 'Open Link', 'Order Now', 'Save', 'Shop Now', 'Subscribe', 'Learn More', 'Contact Us', 'Download']
+    unique_store_urls = set()
+
     try:
         # Initialize the browser and navigate to the page
         browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -60,18 +63,17 @@ def get_facebook_ads():
         time.sleep(5)
 
         # Now we must go through each ad tablet and output `unique` CTA urls
-        # Going to go down the bizarre strategy of just tabbing through the ads
         starting_element = browser.find_element(By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")
         starting_element.click()
         time.sleep(1)
         starting_element.click()
         time.sleep(3)
+
         # actual tabbing process, with a starting point and the next element being reassigned to the initial, to tab to
-        for i in range(20):
+        for i in range(50):
             starting_element.send_keys(Keys.TAB)
             tab_wait = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
             starting_element = browser.switch_to.active_element
-            time.sleep(1)
             # check for a set of keywords when a CTA button is targeted, if matched then extract URL from source
             if starting_element.aria_role == 'button':
                 button_text = starting_element.text
@@ -79,15 +81,19 @@ def get_facebook_ads():
                     parent_element = starting_element.find_element(By.XPATH, "..")
                     while (True):
                         if parent_element.tag_name != 'a':
-                            #moves up element ancestry chain 
+                            # moves up element ancestry chain 
                             parent_element = parent_element.find_element(By.XPATH, "..") 
                         else:
                             cta_url = parent_element.get_attribute('href')
-                            print(cta_url)
+                            # store links in a set
+                            unique_store_urls.add(cta_url)
                             break
             else:
                 continue
-
+        # prints numbered list of urls
+        print("\n")
+        for index, value in enumerate(unique_store_urls, start=1):
+            print(f"{index}. {value}")            
     except Exception as e:
         print(e)
         browser.quit() 
