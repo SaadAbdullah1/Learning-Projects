@@ -9,6 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 
 # A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
 def get_facebook_ads():
@@ -25,7 +26,8 @@ def get_facebook_ads():
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
         search_box.click()
         search_box.clear()
-        search_box.send_keys("" "" + Keys.ENTER)
+        # search_box.send_keys("" "" + Keys.ENTER)
+        search_box.send_keys("hearthstone" + Keys.ENTER)
         time.sleep(3)
         filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
         filters_button.click()
@@ -67,12 +69,12 @@ def get_facebook_ads():
         starting_element.click()
         time.sleep(1)
         starting_element.click()
-        time.sleep(3)
+        time.sleep(1)
 
         # actual tabbing process, with a starting point and the next element being reassigned to the initial, to tab to
-        for i in range(50):
+        while(True):
             starting_element.send_keys(Keys.TAB)
-            tab_wait = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
+            WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
             starting_element = browser.switch_to.active_element
             # check for a set of keywords when a CTA button is targeted, if matched then extract URL from source
             if starting_element.aria_role == 'button':
@@ -88,8 +90,25 @@ def get_facebook_ads():
                             # store links in a set
                             unique_store_urls.add(cta_url)
                             break
+                else:
+                    continue
             else:
                 continue
+            # to look for the loading page data as part of infinite scroll
+            spinner_element = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH, "/div/div/span/svg")))
+            if spinner_element.is_displayed():
+                print("Spinner exists")
+            else:
+                print("Spinner doesn't exist")
+                break
+            # try:
+            #     spinner = browser.find_element(By.XPATH, "/div/div/span/svg")
+            #     print("spinner found")
+            # except NoSuchElementException:
+            #     # spinner element is not present on page, means data is all loaded
+            #     print("Spinner not found")
+            #     break
+
         # prints numbered list of urls
         print("\n")
         for index, value in enumerate(unique_store_urls, start=1):
@@ -97,27 +116,50 @@ def get_facebook_ads():
     except Exception as e:
         print(e)
         browser.quit() 
+        return unique_store_urls
 
-# A function that will first crawl the web to scrape all active 'shopify' stores
-def get_shopify_stores(site_url):
-    shops = []
-    url = 'https://www.google.com/search?q=site:shopify.com'
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    links = soup.find_all('a')
-
-    for link in links:
-        shop = link.get('href')
-        if shop and 'shopify.com' in shop:
-            if shop.startswith('/url?q='):
-                shop = shop[7:]
-                if '&sa=' in shop:
-                    shop = shop.split('&sa=')[0]
-            shops.append(shop)
+# Automating control of the website 'builtwith.com', to determine if given url is shopfiy store and add them to a verified set
+def is_shopify_store(test_set):
     
-    print("Found the following Shopify stores:")
-    for shop in shops:
-        print(" -", shop)
+    # Initialize the browser and navigate to the page
+    browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    validated_shopify_stores = set()
+    # not useful for this script, but for general data
+    non_shopify_stores = set()
+    non_ecommerce = set()
+
+    # loop given set of urls and check for Shopify platformness
+    for i in test_set:
+
+        browser.get("https://www.builtwith.com")
+        search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='q']")))
+        search_box.click()
+        search_box.clear()
+        search_box.send_keys(i, Keys.ENTER)
+        # print(i)       
+
+        try:
+            # find the `eCommerce` tag, under which website sales platform is found
+            ecom_element = browser.find_element(By.XPATH, "//h6[normalize-space()='eCommerce']")
+            platform_element = browser.find_element(By.XPATH, "//div[3]//div[1]//div[2]//div[1]//h2[1]//a[1]")
+            if ecom_element.text == 'eCommerce' and platform_element.text == "Shopify":
+                # print("Is a Shopify ecommerce platform\n")
+                validated_shopify_stores.add(i)
+            else:
+                # print("Is a non-Shopify ecommerce platform\n")
+                non_shopify_stores.add(i)
+        except NoSuchElementException:
+            # print("Not an ecommerce platform at all\n")
+            non_ecommerce.add(i)
+    
+    percent_vss = (len(validated_shopify_stores) / len(test_set)) * 100
+    percent_nss = (len(non_shopify_stores) / len(test_set)) * 100
+    percent_ne = (len(non_ecommerce) / len(test_set)) * 100
+
+    print("\nFrom the extracted Meta Library of '", len(test_set), "' total ads:\n->", percent_vss, "%", " are SHOPIFY stores [", len(validated_shopify_stores), "site(s)]\n->", percent_nss, "%" ," are NON-SHOPIFY ecommerce [", len(non_shopify_stores), "site(s)]\n->", percent_ne, "%", " are NON-ECOMMERCE based [", len(non_ecommerce), "site(s)]\n")
+
+    browser.quit()
+    return validated_shopify_stores
 
 #------------------------------------------------------------------------------------------------------------------------------#
 # This is the steps PPSPY utilizes for scraping store data (According to a posting on Stackoverflow)
@@ -136,7 +178,16 @@ def get_shopify_stores(site_url):
 
 # MAIN EXECUTION 
 def main():
-    get_facebook_ads()
+
+    # Step 1 - get_facebook_ads() with an open search query -> (" ")
+    # get_facebook_ads()
+
+    # Step 2 - check if each index from set of collected urls, is_shopify_store(test_url)
+    test_set = set()
+    test_set = ("misvale.com", "validatorai.com", "youtube.com", "https://www.italojewelry.com/italo-purple-love-design-titanium-steel-couple-rings-251001.html")
+    is_shopify_store(test_set)
+    
+    # Step 3 - peform main step of collecting sales data from store sitemap etc.
 
 if __name__ == "__main__":
     main()
