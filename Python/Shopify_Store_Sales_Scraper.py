@@ -20,7 +20,7 @@ from selenium.common.exceptions import TimeoutException
 def get_facebook_ads():
 
     past_date = (datetime.now() - timedelta(days=3)).strftime("%m/%d/%Y")
-    meta_cta_buttons = ['Get Offer', 'Get offer', 'Open Link', 'Open link', 'Order Now', 'Order now', 'Save', 'Shop Now', 'Shop now', 'Subscribe', 'Learn More', 'Learn more', 'Contact Us', 'Contact us', 'Download']
+    meta_cta_buttons = ['Get Offer', 'Get offer', 'Open Link', 'Open link', 'Order Now', 'Order now', 'Save', 'Shop Now', 'Shop now', 'Subscribe', 'Contact Us', 'Contact us', 'Download']
     unique_store_urls = set()
 
     try:
@@ -31,7 +31,8 @@ def get_facebook_ads():
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
         search_box.click()
         search_box.clear()
-        search_box.send_keys("" "" + Keys.ENTER)
+        # search_box.send_keys("" "" + Keys.ENTER)
+        search_box.send_keys("stonepeople" + Keys.ENTER)
         time.sleep(3)
         
         # filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
@@ -92,7 +93,7 @@ def get_facebook_ads():
             if not current_element.get_attribute('aria-controls'):
                 print("traversing...")
             elif current_element.get_attribute('aria-controls').startswith("js_"):
-                print("\nNew ad - Traversing...\n")
+                print("\nNew ad - Traversing...")
                 new_ad += 1
 
             current_element.send_keys(Keys.TAB)
@@ -117,23 +118,34 @@ def get_facebook_ads():
                             break
                 else:
                     continue
+            # should ideally break when it hits the first element in the footer (because ofcourse no further data was loaded in time or exists)
+            elif current_element.get_attribute('text') == "Ad Library API":
+                print("footer hit - abort script!")
+                break
             else:
                 continue
+
             try:
                 # to look for the loading page data as part of infinite scroll
-                spinner_element = WebDriverWait(browser, 5).until(EC.visibility_of_element_located((By.XPATH, "//span[@role='progressbar']//*[name()='svg']")))
+                spinner_element = WebDriverWait(browser, 3).until(EC.visibility_of_element_located((By.XPATH, "//span[@role='progressbar']//*[name()='svg']")))
                 end_of_page_element = browser.find_element(By.XPATH, "//a[contains(text(),'Ad Library API')]")
                 if spinner_element:
-                    print("Spinner exists")
+                    print("Spinner exists -> waiting for data load")
                     time.sleep(5)
-                # if its at the footer, it means no data was loaded in time
-                elif current_element == end_of_page_element:
-                    break
             except TimeoutException:
-                print("Spinner doesn't exist")
-                continue
+                print("Spinner doesn't exist -> resuming scroll\n")
             
-            # if ads_observed > 0:  #the top element will be hit every time, but a cta button will at times not exist, meaning that ad was just run past without stopping
+            # check for at least 3 ads having been skipped, so that it can sleep to load more
+            if new_ad - ads_traversed == 3:
+                print("\n----------Stopping for data to load----------")
+                time.sleep(5)
+            else:
+                continue 
+
+            # Since the main issue im trying to avoid is, waiting for data to load when its scrolled all the way down the page, without it leaving the scroll/loop since it hits the footer. 
+            # Instead of worrying about checking for skipped ads, or keeping counters or w.e. Why can't I just jump back to the last AD it was on before it hit the footer? Putting a sleep for 5 seconds so the auto-load takes place succesfully and it can resume tabbing from that element. The issue here is finding the unique identifier of that AD for the script to identify and select. 
+
+
 
         # prints numbered list of urls
         print("\n")
