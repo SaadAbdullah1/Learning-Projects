@@ -32,7 +32,7 @@ def get_facebook_ads():
         search_box.click()
         search_box.clear()
         # search_box.send_keys("" "" + Keys.ENTER)
-        search_box.send_keys("stonepeople" + Keys.ENTER)
+        search_box.send_keys("hearthstone" + Keys.ENTER)
         time.sleep(3)
         
         # filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
