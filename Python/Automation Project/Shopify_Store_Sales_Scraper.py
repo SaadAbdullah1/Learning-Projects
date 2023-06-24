@@ -32,8 +32,8 @@ def get_facebook_ads():
         search_box.click()
         search_box.clear()
         # search_box.send_keys("" "" + Keys.ENTER)
-        search_box.send_keys("hearthstone" + Keys.ENTER)
-        time.sleep(3)
+        search_box.send_keys("gift" + Keys.ENTER)
+        time.sleep(5)
         
         # filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
         # filters_button.click()
@@ -88,6 +88,8 @@ def get_facebook_ads():
         # actual tabbing process, with a starting point and the next element being reassigned to the initial, to tab to
         ads_traversed = 0
         new_ad = 0
+        last_traversed_ad = None
+
         while(True):
             
             if not current_element.get_attribute('aria-controls'):
@@ -118,22 +120,29 @@ def get_facebook_ads():
                             break
                 else:
                     continue
+                
             # should ideally break when it hits the first element in the footer (because ofcourse no further data was loaded in time or exists)
             elif current_element.get_attribute('text') == "Ad Library API":
+                print("footer hit - returning to last ad and waiting for potential data to load")
+                WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
                 print("footer hit - abort script!")
                 break
             else:
                 continue
-
-            try:
-                # to look for the loading page data as part of infinite scroll
-                spinner_element = WebDriverWait(browser, 3).until(EC.visibility_of_element_located((By.XPATH, "//span[@role='progressbar']//*[name()='svg']")))
-                end_of_page_element = browser.find_element(By.XPATH, "//a[contains(text(),'Ad Library API')]")
-                if spinner_element:
-                    print("Spinner exists -> waiting for data load")
-                    time.sleep(5)
-            except TimeoutException:
-                print("Spinner doesn't exist -> resuming scroll\n")
+            
+            # try:
+            #     # to look for the loading page data as part of infinite scroll
+            #     # spinner_element = WebDriverWait(browser, 3).until(EC.visibility_of_element_located((By.XPATH, "//span[@role='progressbar']//*[name()='svg']")))
+            #     spinner_element = WebDriverWait(browser, 5).until(EC.visibility_of_element_located((By.XPATH, "//*[local-name()='svg' and @role='progressbar']")))
+            #     # end_of_page_element = browser.find_element(By.XPATH, "//a[contains(text(),'Ad Library API')]")
+            #     print("")
+            #     if spinner_element:
+            #         print("Spinner exists -> waiting for data load")
+            #         time.sleep(5)
+            #     print("")
+            # except TimeoutException:
+            #     print("")
+            #     print("Spinner doesn't exist -> resuming scroll\n")
             
             # check for at least 3 ads having been skipped, so that it can sleep to load more
             if new_ad - ads_traversed == 3:
