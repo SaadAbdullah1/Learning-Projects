@@ -35,43 +35,43 @@ def get_facebook_ads():
         search_box.send_keys("gift" + Keys.ENTER)
         time.sleep(5)
         
-        # filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
-        # filters_button.click()
-        # time.sleep(3)
+        filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+        filters_button.click()
+        time.sleep(3)
         
-        # # [Popup] Activating the filters (English, active ads, date from (last 2 days) to today)
-        # filters_language_dropdown = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='All languages']")))
-        # filters_language_dropdown.click()
-        # time.sleep(2)
-        # filters_language_selector_en = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='English']")))
-        # filters_language_selector_en.click()
-        # time.sleep(2)
-        # ## click out of dropdown selector
-        # click_out = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='combobox']//div//div//div//div//div//div//div[contains(text(),'English')]")))
-        # click_out.click()
-        # time.sleep(2)
-        # filters_active_status = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active and inactive']")))
-        # filters_active_status.click()
-        # time.sleep(2)
-        # filters_active_selector = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active ads']")))
-        # filters_active_selector.click()
-        # time.sleep(2)
-        # # scroll into view of date element
-        # pg_down = browser.find_element(By.XPATH, "//input[@placeholder='mm/dd/yyyy']")
-        # pg_down.location_once_scrolled_into_view
-        # filters_from_date = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='mm/dd/yyyy']")))
-        # filters_from_date.click()
-        # filters_from_date.send_keys(Keys.CONTROL, "a")
-        # filters_from_date.send_keys(Keys.BACK_SPACE)
-        # filters_from_date.send_keys(past_date)
-        # time.sleep(2)
-        # ## apply all filters
-        # filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")))
-        # filters_apply.click()
-        # time.sleep(5)
-
+        # [Popup] Activating the filters (English, active ads, date from (last 2 days) to today)
+        filters_language_dropdown = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='All languages']")))
+        filters_language_dropdown.click()
+        time.sleep(2)
+        filters_language_selector_en = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='English']")))
+        filters_language_selector_en.click()
+        time.sleep(2)
+        ## click out of dropdown selector
+        click_out = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='combobox']//div//div//div//div//div//div//div[contains(text(),'English')]")))
+        click_out.click()
+        time.sleep(2)
+        filters_active_status = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active and inactive']")))
+        filters_active_status.click()
+        time.sleep(2)
+        filters_active_selector = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active ads']")))
+        filters_active_selector.click()
+        time.sleep(2)
+        # scroll into view of date element
+        pg_down = browser.find_element(By.XPATH, "//input[@placeholder='mm/dd/yyyy']")
+        pg_down.location_once_scrolled_into_view
+        filters_from_date = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='mm/dd/yyyy']")))
+        filters_from_date.click()
+        filters_from_date.send_keys(Keys.CONTROL, "a")
+        filters_from_date.send_keys(Keys.BACK_SPACE)
+        filters_from_date.send_keys(past_date)
+        time.sleep(2)
+        ## apply all filters
+        filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")))
+        filters_apply.click()
+        time.sleep(5)
+ 
         # Now we must go through each ad tablet and output `unique` CTA urls
-        current_element = browser.find_element(By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")
+        current_element = browser.find_element(By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")
         current_element.click()
         current_element.click()
         
