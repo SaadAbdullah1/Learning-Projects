@@ -15,47 +15,53 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
+
+def load_new_ads(browser):
+    actions = ActionChains(browser)
+    actions.move_to_element(browser.find_element('xpath', '//a[text() = "Ad Library API"]')).perform()
+    try:
+        WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@data-visualcompletion="loading-state"]')))
+    except:
+        load_new_ads(browser)
+        return
+    WebDriverWait(browser, 60).until(EC.invisibility_of_element((By.XPATH, '//div[@data-visualcompletion="loading-state"]')))
 
 # A function to utilize Selenium to crawl the Meta Ads Library and grab needed ads links 
 def get_facebook_ads():
 
+    # past_date = (datetime.now() - timedelta(days=3)).strftime("%m/%d/%Y")
     past_date = (datetime.now() - timedelta(days=3)).strftime("%m/%d/%Y")
     meta_cta_buttons = ['Get Offer', 'Get offer', 'Open Link', 'Open link', 'Order Now', 'Order now', 'Save', 'Shop Now', 'Shop now', 'Subscribe', 'Contact Us', 'Contact us', 'Download']
     unique_store_urls = set()
 
     try:
-        # Initialize the browser and navigate to the page
+
         browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        browser.maximize_window()
         browser.get("https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all")
-        # (In working order): Look for keyword, make it clickable, clear existing data in box, enter new info, keep page open for 10 seconds
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
         search_box.click()
         search_box.clear()
-        # search_box.send_keys("" "" + Keys.ENTER)
-        search_box.send_keys("gift" + Keys.ENTER)
-        time.sleep(5)
-        
-        filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[5]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]")))
+
+        #--------------------------------------------------- CHANGE KEYWORD SEARCH TEXT ---------------------------------------------------#
+        search_box.send_keys("" "" + Keys.ENTER)
+        #--------------------------------------------------- CHANGE KEYWORD SEARCH TEXT ---------------------------------------------------#
+
+        filters_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[text()="Filters"]//ancestor::div[@role="button"]')))
         filters_button.click()
-        time.sleep(3)
-        
-        # [Popup] Activating the filters (English, active ads, date from (last 2 days) to today)
-        filters_language_dropdown = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='All languages']")))
+        # # [Popup] Activating the filters (English, active ads, date from (last 2 days) to today)
+        filters_language_dropdown = WebDriverWait(browser, 20).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='All languages']")))
         filters_language_dropdown.click()
-        time.sleep(2)
         filters_language_selector_en = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='English']")))
         filters_language_selector_en.click()
-        time.sleep(2)
-        ## click out of dropdown selector
-        click_out = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='combobox']//div//div//div//div//div//div//div[contains(text(),'English')]")))
-        click_out.click()
-        time.sleep(2)
+        # click_out = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='combobox']//div//div//div//div//div//div//div[contains(text(),'English')]")))
+        # click_out.click()
+        browser.find_element('xpath', '//div[text()="Filters" and @role="heading"]').click()
         filters_active_status = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active and inactive']")))
         filters_active_status.click()
-        time.sleep(2)
         filters_active_selector = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Active ads']")))
         filters_active_selector.click()
-        time.sleep(2)
         # scroll into view of date element
         pg_down = browser.find_element(By.XPATH, "//input[@placeholder='mm/dd/yyyy']")
         pg_down.location_once_scrolled_into_view
@@ -64,102 +70,58 @@ def get_facebook_ads():
         filters_from_date.send_keys(Keys.CONTROL, "a")
         filters_from_date.send_keys(Keys.BACK_SPACE)
         filters_from_date.send_keys(past_date)
-        time.sleep(2)
+
+        browser.find_element('xpath', '//div[text()="Filters" and @role="heading"]').click()
+
         ## apply all filters
-        filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")))
+        WebDriverWait(browser, 10).until(lambda x: browser.find_element('xpath', '//div[contains(text(),"Apply 3")]//ancestor::div[@role="button"]').get_attribute('aria-disabled') != 'true')
+        filters_apply = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[contains(text(),"Apply")]//ancestor::div[@role="button"]')))
         filters_apply.click()
-        time.sleep(5)
- 
+
         # Now we must go through each ad tablet and output `unique` CTA urls
-        current_element = browser.find_element(By.XPATH, "//body[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]")
-        current_element.click()
-        current_element.click()
-        
-        # it will end anyways, so regularly scroll until, check for footer element to see if tab has hit the end
-        # if i do want it to break, i can keep a counter to stop at for example 1000 ads
-        # slow down run time, to let page load with inifinite scroll as pect when it tabs to last ad
 
-        # ads library loads 30 ads each load time (end of page)
-        # starts with 30 ads only
-        # check for spinner/loader animation, when iterated through 30 ads
-
-        # FIND OUT WHEN IT TRIGGERS THE 'LOAD MORE' functionality of the infinite scroll, then you can check for end of page etc.
-
-        # actual tabbing process, with a starting point and the next element being reassigned to the initial, to tab to
+        # actual scraping process, with a starting point and the next element being reassigned to the initial, to tab to
+        all_ads = []
+        cta_ads_traversed = 0
         ads_traversed = 0
-        new_ad = 0
-        last_traversed_ad = None
-
+        # use user input for requested # of ads to scrape
+        num_ads_requested = int(input("Enter the # of Ads you want data for (a greater # will take longer to scrape)"))
+        
         while(True):
-            
-            if not current_element.get_attribute('aria-controls'):
-                print("traversing...")
-            elif current_element.get_attribute('aria-controls').startswith("js_"):
-                print("\nNew ad - Traversing...")
-                new_ad += 1
-
-            current_element.send_keys(Keys.TAB)
-            WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
-            current_element = browser.switch_to.active_element
-
-            # check for a set of keywords when a CTA button is targeted, if matched then extract URL from source    
-            if current_element.get_attribute('role') == "button" and current_element.get_attribute('aria-busy') == "false" and current_element.get_attribute('tabindex') == '0':
-                button_text = current_element.text
-                if button_text in meta_cta_buttons:
-                    ads_traversed += 1
-                    print("Ad traversed! Going next...\n")
-                    parent_element = current_element.find_element(By.XPATH, "..")
-                    while (True):
-                        if parent_element.tag_name != 'a':
-                            # moves up element ancestry chain 
-                            parent_element = parent_element.find_element(By.XPATH, "..") 
-                        else:
-                            cta_url = parent_element.get_attribute('href')
-                            # store links in a set
-                            unique_store_urls.add(cta_url)
-                            break
-                else:
-                    continue
-                
-            # should ideally break when it hits the first element in the footer (because ofcourse no further data was loaded in time or exists)
-            elif current_element.get_attribute('text') == "Ad Library API":
-                print("footer hit - returning to last ad and waiting for potential data to load")
-                WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.XPATH, "//body/div/div/div[@role='main']/div/div/div/div/div/div/div[4]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]")))
-                print("footer hit - abort script!")
+            print("Scraping...")
+            WebDriverWait(browser, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class,"_7jyg")]')))
+            # time.sleep(2)
+            ads = browser.find_elements('xpath', '//div[contains(@class,"_7jyg")]')
+            ads = [ad for ad in ads if ad not in all_ads]
+            for ad in ads:
+                ads_traversed+=1
+                # print(f'ads traversed: {ads_traversed}')
+                btns = ad.find_elements('xpath', './/div[@role="button"]')
+                btn = [btn for btn in btns if btn.text in meta_cta_buttons]
+                if btn:
+                    btn = btn[0]
+                    url = btn.find_element('xpath', './/ancestor::a').get_attribute('href')
+                    unique_store_urls.add(url)
+                    cta_ads_traversed += 1
+            #--------------------------------------------------- CHANGE NUMBER OF ADS TO GRAB LINKS FOR ---------------------------------------------------#
+            if len(unique_store_urls) >= num_ads_requested:
+            #--------------------------------------------------- CHANGE NUMBER OF ADS TO GRAB LINKS FOR ---------------------------------------------------#
                 break
-            else:
-                continue
-            
-            # try:
-            #     # to look for the loading page data as part of infinite scroll
-            #     # spinner_element = WebDriverWait(browser, 3).until(EC.visibility_of_element_located((By.XPATH, "//span[@role='progressbar']//*[name()='svg']")))
-            #     spinner_element = WebDriverWait(browser, 5).until(EC.visibility_of_element_located((By.XPATH, "//*[local-name()='svg' and @role='progressbar']")))
-            #     # end_of_page_element = browser.find_element(By.XPATH, "//a[contains(text(),'Ad Library API')]")
-            #     print("")
-            #     if spinner_element:
-            #         print("Spinner exists -> waiting for data load")
-            #         time.sleep(5)
-            #     print("")
-            # except TimeoutException:
-            #     print("")
-            #     print("Spinner doesn't exist -> resuming scroll\n")
-            
-            # check for at least 3 ads having been skipped, so that it can sleep to load more
-            if new_ad - ads_traversed == 3:
-                print("\n----------Stopping for data to load----------")
-                time.sleep(5)
-            else:
-                continue 
+            all_ads.extend(ads)
+            # print("Total ads traversed through = ", len(all_ads))
+            # browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            load_new_ads(browser)
+            time.sleep(2)
+        print("Completed.\n")
+        print("Total ads traversed through = ", len(all_ads))
 
-            # Since the main issue im trying to avoid is, waiting for data to load when its scrolled all the way down the page, without it leaving the scroll/loop since it hits the footer. 
-            # Instead of worrying about checking for skipped ads, or keeping counters or w.e. Why can't I just jump back to the last AD it was on before it hit the footer? Putting a sleep for 5 seconds so the auto-load takes place succesfully and it can resume tabbing from that element. The issue here is finding the unique identifier of that AD for the script to identify and select. 
-
-
-
-        # prints numbered list of urls
-        print("\n")
-        for index, value in enumerate(unique_store_urls, start=1):
-            print(f"{index}. {value}")            
+        # prints numbered list of urls 
+        # for index, url in enumerate(unique_store_urls, start=1):
+        #     print(index, url)
+        print("\nNumber of URLS requested = ", num_ads_requested, "\nNumber of UNIQUE URLS found = ", len(unique_store_urls))
+        browser.quit()
+        return unique_store_urls
+          
     except Exception as e:
         print(e)
         browser.quit() 
@@ -218,7 +180,7 @@ def is_shopify_store(test_set):
 # 4. After that, it calls the JSON URL for each product. You can get this URL in your online store by simply opening a product 
 #    page and writing ".json" after it in the URL. Example URL: .../products/your-productname.json.
 # 
-# In this JSON there is a field "updated_at". This field is updated every time a change is made. Also, when an order take place (the stock is changed).
+# In this JSON there is a field "updated_at". This field is updated every time a change is made. Also, when an order takes place (the stock is changed).
 # And with this, it is possible to track the sales (approximately).
 #------------------------------------------------------------------------------------------------------------------------------#
 # def get_sales_data():
