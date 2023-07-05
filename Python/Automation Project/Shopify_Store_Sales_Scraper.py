@@ -85,8 +85,10 @@ def get_facebook_ads():
         cta_ads_traversed = 0
         ads_traversed = 0
         # use user input for requested # of ads to scrape
-        num_ads_requested = int(input("Enter the # of Ads you want data for (a greater # will take longer to scrape)"))
-        
+        num_ads_requested = int(input("\nEnter the # of Ads you want data for (a greater # will take longer to scrape)\n-> "))
+        print("\n")
+        start_time = time.time()
+
         while(True):
             print("Scraping...")
             WebDriverWait(browser, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class,"_7jyg")]')))
@@ -119,6 +121,9 @@ def get_facebook_ads():
         # for index, url in enumerate(unique_store_urls, start=1):
         #     print(index, url)
         print("\nNumber of URLS requested = ", num_ads_requested, "\nNumber of UNIQUE URLS found = ", len(unique_store_urls))
+        end_time = time.time()
+        scrape_time = end_time - start_time
+        print("\nTotal time(sec) taken to scrape these ads = ", round(scrape_time, 1))
         browser.quit()
         return unique_store_urls
           
@@ -128,7 +133,7 @@ def get_facebook_ads():
         return unique_store_urls
 
 # Automating control of the website 'builtwith.com', to determine if given url is shopfiy store and add them to a verified set
-def is_shopify_store(test_set):
+def is_shopify_store(random_unique_urls):
     
     # Initialize the browser and navigate to the page
     browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -138,7 +143,7 @@ def is_shopify_store(test_set):
     non_ecommerce = set()
 
     # loop given set of urls and check for Shopify platformness
-    for i in test_set:
+    for i in random_unique_urls:
 
         browser.get("https://www.builtwith.com")
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='q']")))
@@ -161,11 +166,11 @@ def is_shopify_store(test_set):
             # print("Not an ecommerce platform at all\n")
             non_ecommerce.add(i)
     
-    percent_vss = (len(validated_shopify_stores) / len(test_set)) * 100
-    percent_nss = (len(non_shopify_stores) / len(test_set)) * 100
-    percent_ne = (len(non_ecommerce) / len(test_set)) * 100
+    percent_vss = (len(validated_shopify_stores) / len(random_unique_urls)) * 100
+    percent_nss = (len(non_shopify_stores) / len(random_unique_urls)) * 100
+    percent_ne = (len(non_ecommerce) / len(random_unique_urls)) * 100
 
-    print("\nFrom the extracted Meta Library of '", len(test_set), "' total ads:\n->", percent_vss, "%", " are SHOPIFY stores [", len(validated_shopify_stores), "site(s)]\n->", percent_nss, "%" ," are NON-SHOPIFY ecommerce [", len(non_shopify_stores), "site(s)]\n->", percent_ne, "%", " are NON-ECOMMERCE based [", len(non_ecommerce), "site(s)]\n")
+    print("\nFrom the extracted Meta Library of '", len(random_unique_urls), "' total ads:\n->", percent_vss, "%", " are SHOPIFY stores [", len(validated_shopify_stores), "site(s)]\n->", percent_nss, "%" ," are NON-SHOPIFY ecommerce [", len(non_shopify_stores), "site(s)]\n->", percent_ne, "%", " are NON-ECOMMERCE based [", len(non_ecommerce), "site(s)]\n")
 
     browser.quit()
     return validated_shopify_stores
@@ -192,14 +197,17 @@ def is_shopify_store(test_set):
 def main():
 
     # Step 1 - get_facebook_ads() with an open search query -> (" ")
+    print("\n-------------------->STEP 1: Scrape Ads Library for X#<--------------------")
     get_facebook_ads()
 
     # Step 2 - check if each index from set of collected urls, is_shopify_store(test_url)
     # test_set = set()
     # test_set = ("misvale.com", "validatorai.com", "youtube.com", "www.italojewelry.com/italo-purple-love-design-titanium-steel-couple-rings-251001.html")
-    # is_shopify_store(test_set)
+    print("\n-------------------->STEP 2: Validate URLs via 'builtwith.com'<--------------------")
+    # is_shopify_store(get_facebook_ads())
     
     # Step 3 - peform main step of collecting sales data from store sitemap etc.
+    print("\n-------------------->STEP 3: Retrieve Sales Data & Rank by 'Top Hourly Sales<--------------------")
     # get_sales_data()
 
 if __name__ == "__main__":
