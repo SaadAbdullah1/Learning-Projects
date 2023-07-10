@@ -16,6 +16,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
+from urllib.parse import unquote, urlparse
 
 def load_new_ads(browser):
     actions = ActionChains(browser)
@@ -101,10 +102,13 @@ def get_facebook_ads():
                 btns = ad.find_elements('xpath', './/div[@role="button"]')
                 btn = [btn for btn in btns if btn.text in meta_cta_buttons]
                 if btn:
-                    btn = btn[0]
-                    url = btn.find_element('xpath', './/ancestor::a').get_attribute('href')
-                    unique_store_urls.add(url)
-                    cta_ads_traversed += 1
+                    try:
+                        btn = btn[0]
+                        url = btn.find_element('xpath', './/ancestor::a').get_attribute('href')
+                        unique_store_urls.add(url)
+                        cta_ads_traversed += 1
+                    except Exception as e:
+                        print("Ad doesn't contain any links", e)
             #--------------------------------------------------- CHANGE NUMBER OF ADS TO GRAB LINKS FOR ---------------------------------------------------#
             if len(unique_store_urls) >= num_ads_requested:
             #--------------------------------------------------- CHANGE NUMBER OF ADS TO GRAB LINKS FOR ---------------------------------------------------#
@@ -123,7 +127,7 @@ def get_facebook_ads():
         print("\nNumber of URLS requested = ", num_ads_requested, "\nNumber of UNIQUE URLS found = ", len(unique_store_urls))
         end_time = time.time()
         scrape_time = end_time - start_time
-        print("\nTotal time(sec) taken to scrape these ads = ", round(scrape_time, 1))
+        print("\nTotal time taken to scrape these ads =", round(scrape_time, 1), "s or", round(scrape_time/60, 1), "mins")
         browser.quit()
         return unique_store_urls
           
@@ -175,6 +179,10 @@ def is_shopify_store(random_unique_urls):
     browser.quit()
     return validated_shopify_stores
 
+# this step only exists to unwrap the FB ads extracted URL's, for the actual URL of the websites
+# def parse_unique_urls():
+
+
 #------------------------------------------------------------------------------------------------------------------------------#
 # This is the steps PPSPY utilizes for scraping store data (According to a posting on Stackoverflow)
 #-------------------------------------------------------------------------------------------------------------------------------
@@ -197,17 +205,20 @@ def is_shopify_store(random_unique_urls):
 def main():
 
     # Step 1 - get_facebook_ads() with an open search query -> (" ")
-    print("\n-------------------->STEP 1: Scrape Ads Library for X#<--------------------")
-    get_facebook_ads()
+    print("\n{STEP 1: Scrape Ads Library for X#}")
+    # get_facebook_ads()
+    temp_store = get_facebook_ads()
+    for url in temp_store:
+        print(url)
 
     # Step 2 - check if each index from set of collected urls, is_shopify_store(test_url)
     # test_set = set()
     # test_set = ("misvale.com", "validatorai.com", "youtube.com", "www.italojewelry.com/italo-purple-love-design-titanium-steel-couple-rings-251001.html")
-    print("\n-------------------->STEP 2: Validate URLs via 'builtwith.com'<--------------------")
+    print("\n{STEP 2: Validate URLs via 'builtwith.com'}")
     # is_shopify_store(get_facebook_ads())
     
     # Step 3 - peform main step of collecting sales data from store sitemap etc.
-    print("\n-------------------->STEP 3: Retrieve Sales Data & Rank by 'Top Hourly Sales<--------------------")
+    print("\n{STEP 3: Retrieve Sales Data & Rank by 'Top Hourly Sales'}")
     # get_sales_data()
 
 if __name__ == "__main__":
