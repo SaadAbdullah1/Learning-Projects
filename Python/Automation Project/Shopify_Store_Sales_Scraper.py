@@ -17,10 +17,11 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import unquote, urlparse
+from selenium.webdriver.chrome.options import Options
 
 def load_new_ads(browser):
     actions = ActionChains(browser)
-    actions.move_to_element(browser.find_element('xpath', '//a[text() = "Ad Library API"]')).perform()
+    actions.move_to_element(browser.find_element(By.XPATH, '//a[text() = "Ad Library API"]')).perform()
     try:
         WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@data-visualcompletion="loading-state"]')))
     except:
@@ -37,9 +38,12 @@ def get_facebook_ads():
     unique_store_urls = set()
 
     try:
+        options = Options()
+        options.add_argument("--headless")  # Run in headless mode
+        options.add_argument("--disable-gpu")
 
-        browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-        browser.maximize_window()
+        browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        # browser.maximize_window()  # Remove maximize_window() to run in headless mode
         browser.get("https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all")
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
         search_box.click()
@@ -208,8 +212,8 @@ def main():
     print("\n{STEP 1: Scrape Ads Library for X#}")
     # get_facebook_ads()
     temp_store = get_facebook_ads()
-    for url in temp_store:
-        print(url)
+    # for url in temp_store:
+    #     print(url)
 
     # Step 2 - check if each index from set of collected urls, is_shopify_store(test_url)
     # test_set = set()
