@@ -5,6 +5,7 @@
 ###-----------------------------------------------------------------------------------------
 
 import time
+import urllib.parse
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -16,8 +17,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from urllib.parse import unquote, urlparse
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import StaleElementReferenceException
 
 def load_new_ads(browser):
     actions = ActionChains(browser)
@@ -42,7 +43,7 @@ def get_facebook_ads():
         options.add_argument("--headless")  # Run in headless mode
         options.add_argument("--disable-gpu")
 
-        browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        browser = webdriver.Chrome(service=Service(ChromeDriverManager(version="114.0.5735.90").install()),options=options)
         # browser.maximize_window()  # Remove maximize_window() to run in headless mode
         browser.get("https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=ALL&q=%22%20%22&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=keyword_exact_phrase&media_type=all")
         search_box = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search by keyword or advertiser']")))
@@ -108,9 +109,20 @@ def get_facebook_ads():
                 if btn:
                     try:
                         btn = btn[0]
-                        url = btn.find_element('xpath', './/ancestor::a').get_attribute('href')
-                        unique_store_urls.add(url)
+                        raw_url = btn.find_element('xpath', './/ancestor::a').get_attribute('href')
+                        if 'https://l.facebook.com/l.php' in raw_url:
+                            # URL is encoded in the 'u' parameter of the query string
+                            parsed = urllib.parse.urlparse(raw_url)
+                            real_url = urllib.parse.parse_qs(parsed.query)['u'][0]
+                            # Perform unquote to get the final URL
+                            real_url = urllib.parse.unquote(real_url)
+                            unique_store_urls.add(real_url)
+                        else:
+                            unique_store_urls.add(raw_url)
                         cta_ads_traversed += 1
+                    except StaleElementReferenceException as e:
+                        print("Stale element reference - skipping this ad:", e)
+                        continue  # Skip to the next ad if the current one is no longer valid
                     except Exception as e:
                         print("Ad doesn't contain any links", e)
             #--------------------------------------------------- CHANGE NUMBER OF ADS TO GRAB LINKS FOR ---------------------------------------------------#
@@ -184,8 +196,6 @@ def is_shopify_store(random_unique_urls):
     return validated_shopify_stores
 
 # this step only exists to unwrap the FB ads extracted URL's, for the actual URL of the websites
-# def parse_unique_urls():
-
 
 #------------------------------------------------------------------------------------------------------------------------------#
 # This is the steps PPSPY utilizes for scraping store data (According to a posting on Stackoverflow)
@@ -209,20 +219,20 @@ def is_shopify_store(random_unique_urls):
 def main():
 
     # Step 1 - get_facebook_ads() with an open search query -> (" ")
-    print("\n{STEP 1: Scrape Ads Library for X#}")
+    print("\n{STEP 1: Scrape Ads Library for X#}\n")
     # get_facebook_ads()
     temp_store = get_facebook_ads()
-    # for url in temp_store:
-    #     print(url)
+    for url in temp_store:
+        print(url)
 
     # Step 2 - check if each index from set of collected urls, is_shopify_store(test_url)
     # test_set = set()
     # test_set = ("misvale.com", "validatorai.com", "youtube.com", "www.italojewelry.com/italo-purple-love-design-titanium-steel-couple-rings-251001.html")
-    print("\n{STEP 2: Validate URLs via 'builtwith.com'}")
+    print("\n{STEP 2: Validate URLs via 'builtwith.com'}\n")
     # is_shopify_store(get_facebook_ads())
     
     # Step 3 - peform main step of collecting sales data from store sitemap etc.
-    print("\n{STEP 3: Retrieve Sales Data & Rank by 'Top Hourly Sales'}")
+    print("\n{STEP 3: Retrieve Sales Data & Rank by 'Top Hourly Sales'}\n")
     # get_sales_data()
 
 if __name__ == "__main__":
